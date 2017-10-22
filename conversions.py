@@ -5,7 +5,7 @@ import unittest
 
 flip_temp = str.maketrans("cCfF", "fFcC")
 
-temperature_re = r"^([+-]?\d+(\.\d*)?)([CF])$"
+temperature_re = r"^(?P<value>[+-]?\d+(\.\d*)?)(?P<f_or_c>[CF])$"
 temperature_pattern = re.compile(temperature_re, re.IGNORECASE)
 
 def convert_temp(temperature):
@@ -17,7 +17,7 @@ def convert_temp(temperature):
     """
     match = temperature_pattern.match(temperature)
     if match:
-        value, f_or_c  = match.group(1, 3)
+        value, f_or_c  = match.group("value", "f_or_c")
         flipped = f_or_c.translate(flip_temp) 
         
         if f_or_c.upper() == 'C':
