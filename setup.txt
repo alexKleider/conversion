@@ -1,0 +1,7 @@
+Reading:
+Mastering Regular Expressions 
+by Jeffrey E. F. Friedl
+2nd Edition
+
+Translating perl into Python.
+
