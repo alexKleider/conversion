@@ -15,7 +15,6 @@ import re
 import unittest
 
 re_template = r"^(?P<value>[+-]?\d+(\.\d*)?)(?P<units>({}|{}))$"
-#temperature_pattern = re.compile(temperature_re, re.IGNORECASE)
 
 flip_temp = str.maketrans("cCfF", "fFcC")
 
@@ -50,7 +49,10 @@ class Conversion(object):
 
 tempCF = Conversion(
     re.compile(re_template.format('C', 'F'), re.IGNORECASE), 
-    "C", "F", str.maketrans("cCfF", "fFcC"), c2f, f2c)
+    "C", "F", str.maketrans("cCfF", "fFcC"),
+    lambda c: float(c) * 9 / 5 + 32,
+    lambda f: (float(f) - 32) * 5 / 9
+    )
 
 def initial_user_run_test(conversion):
     user_input = 'something'
