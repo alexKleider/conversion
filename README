@@ -1,0 +1,7 @@
+
+Began by studying regular expressions (see setup.txt):
+Wrote temp_conversion.py...
+Then tried to make it more generic and this evolved into
+convert.py which provides a class that can quickly create
+an instance of Conversion specific for any pair of units.
+
