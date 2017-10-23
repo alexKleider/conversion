@@ -8,8 +8,17 @@ specific unit conversion capablility.
 First instance created is for temperature:
 from convert import tempCF
 tempCF.convert(temp) => (value, units)
-"""
+<temp> must be a string consisting of a string
+representation of a float followed immediately
+by the letter c or the letter f.  Case doesn't matter.
 
+Next for distances (Kilometers/Miles)
+from convert import distanceKmMi
+distanceKmMi.convert(distance) => (value, units)
+<distance> must be a string consisting of a string
+representation of a float followed immediately
+by the letter sequence 'Km' or 'Mi'. Case does matter.
+"""
 
 import re
 import unittest
@@ -26,13 +35,14 @@ def f2c(f):
 
 class Conversion(object):
 
-    def __init__(self, pattern, u1, u2, flip, f1, f2):
-        self.pattern = pattern
+    def __init__(self, u1, u2, flip, f1, f2):
+        self.pattern = re.compile(
+            re_template.format(u1, u2), re.IGNORECASE) 
         self.u1 = u1
         self.u2 = u2
         self.flip = flip
-        self.f1 = f1
-        self.f2 = f2
+        self.f1 = f1  # u1 ==> u2
+        self.f2 = f2  # u2 ==> u1
     
     def convert(self, user_input):
         match = self.pattern.match(user_input)
@@ -48,16 +58,22 @@ class Conversion(object):
                 print("Major ERROR!!!!")
 
 tempCF = Conversion(
-    re.compile(re_template.format('C', 'F'), re.IGNORECASE), 
     "C", "F", str.maketrans("cCfF", "fFcC"),
     lambda c: float(c) * 9 / 5 + 32,
     lambda f: (float(f) - 32) * 5 / 9
     )
 
-def initial_user_run_test(conversion):
+distanceKmMi = Conversion(
+    "KM", "MI", str.maketrans("kKmMi",
+                              "mMiKm"),
+    lambda k: float(k) / 1.60934,
+    lambda m: float(m) * 1.60934
+    )
+
+def initial_user_run_test(conversion, measure):
     user_input = 'something'
     while user_input:
-        user_input = input("Enter a temp: ")
+        user_input = input("Enter a {}: ".format(measure))
         checked = conversion.convert(user_input)
         if checked:
             print(f"Good: {checked[0]:.2f}{checked[1]}")
@@ -66,5 +82,6 @@ def initial_user_run_test(conversion):
 
 
 if __name__ == "__main__":
-    initial_user_run_test(tempCF)
+    initial_user_run_test(distanceKmMi, 'distance')
+#   initial_user_run_test(tempCF, 'temperature')
 #   unittest.main()
