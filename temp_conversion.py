@@ -1,12 +1,22 @@
-# File: conversions.py
+# File: temp_conversion.py
 
 import re
 import unittest
 
+re_template = r"^(?P<value>[+-]?\d+(\.\d*)?)(?P<units>({}|{}))$"
+temperature_re = re_template.format('C', 'F')
+print(re_template)
+print(temperature_re)
+#temperature_re = r"^(?P<value>[+-]?\d+(\.\d*)?)(?P<units>(C|F))$"
+temperature_pattern = re.compile(temperature_re, re.IGNORECASE)
+
 flip_temp = str.maketrans("cCfF", "fFcC")
 
-temperature_re = r"^(?P<value>[+-]?\d+(\.\d*)?)(?P<f_or_c>[CF])$"
-temperature_pattern = re.compile(temperature_re, re.IGNORECASE)
+def c2f(c):
+    return float(c) * 9 / 5 + 32
+
+def f2c(f):
+    return (float(f) - 32) * 5 / 9
 
 def convert_temp(temperature):
     """
@@ -17,13 +27,13 @@ def convert_temp(temperature):
     """
     match = temperature_pattern.match(temperature)
     if match:
-        value, f_or_c  = match.group("value", "f_or_c")
-        flipped = f_or_c.translate(flip_temp) 
+        value, units  = match.group("value", "units")
+        flipped = units.translate(flip_temp) 
         
-        if f_or_c.upper() == 'C':
-            return (float(value) * 9 / 5 + 32, flipped)
+        if units.upper() == 'C':
+            return (c2f(value), flipped)
         else: 
-            return ((float(value) - 32) * 5 / 9, flipped)
+            return (f2c(value), flipped)
 
 def initial_user_run_test():
     user_input = 'something'
@@ -56,6 +66,6 @@ class TemperatureConversionTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-
-    unittest.main()
+    initial_user_run_test()
+#   unittest.main()
 
